@@ -148,74 +148,113 @@ ul{ list-style:none; }
   z-index:0;
   overflow:hidden;
   background:
-    radial-gradient(130% 62% at 63% 77%, rgba(150,186,236,.07), transparent 64%),
+    radial-gradient(140% 66% at 63% 78%, rgba(168,196,238,.075), transparent 66%),
+    radial-gradient(72% 42% at 63% 83%, rgba(255,206,150,.055), transparent 70%),
     #050505;
 }
 .plate-video{ z-index:1; }
 
-/* Столб света — «дверь», к которой идёт фигура */
+/* Камера: очень медленный наезд. Двигаем только transform — работа
+   уходит на GPU, раскладка не пересчитывается ни разу. */
+.fb-cam{
+  position:absolute;
+  inset:0;
+  transform-origin:63% 62%;
+  animation:fbPush 52s ease-in-out infinite alternate;
+  will-change:transform;
+}
+
+/* Столб света. Ядро тёплое, спад холодный — так свет читается
+   объёмным, а не плоской белой полосой. */
 .fb-portal{
   position:absolute;
   left:63%;
-  top:26.5%;
-  width:calc(27 * var(--u));
-  height:51%;
+  top:25.5%;
+  width:calc(29 * var(--u));
+  height:52.5%;
   transform:translateX(-50%);
   border-radius:calc(16 * var(--u)) calc(16 * var(--u)) 0 0;
   background:linear-gradient(to bottom,
     rgba(255,255,255,0) 0%,
-    rgba(255,255,255,.88) 13%,
-    #ffffff 46%,
-    rgba(255,255,255,.95) 84%,
-    rgba(255,255,255,.72) 100%);
+    rgba(255,249,240,.90) 12%,
+    #fffdf9 42%,
+    rgba(255,245,230,.97) 78%,
+    rgba(255,228,190,.80) 100%);
   box-shadow:
-    0 0 calc(38 * var(--u)) calc(11 * var(--u)) rgba(214,232,255,.52),
-    0 0 calc(118 * var(--u)) calc(38 * var(--u)) rgba(150,190,240,.26),
-    0 0 calc(258 * var(--u)) calc(88 * var(--u)) rgba(88,138,208,.15);
+    0 0 calc(26 * var(--u))  calc(7 * var(--u))   rgba(255,232,198,.62),
+    0 0 calc(78 * var(--u))  calc(24 * var(--u))  rgba(255,203,148,.34),
+    0 0 calc(172 * var(--u)) calc(56 * var(--u))  rgba(168,198,242,.24),
+    0 0 calc(320 * var(--u)) calc(110 * var(--u)) rgba(92,140,212,.15);
   animation:fbBreathe 7.5s ease-in-out infinite;
+}
+
+/* Конус света из проёма */
+.fb-shaft{
+  position:absolute;
+  left:63%;
+  top:25%;
+  width:calc(320 * var(--u));
+  height:57%;
+  transform:translateX(-50%);
+  background:radial-gradient(58% 100% at 50% 0%,
+    rgba(255,231,200,.14) 0%,
+    rgba(255,222,186,.05) 42%,
+    transparent 72%);
+  filter:blur(calc(16 * var(--u)));
+  animation:fbBreathe 11s ease-in-out infinite;
 }
 
 /* Разлив света по полу */
 .fb-floor{
   position:absolute;
   left:63%;
-  top:74%;
-  width:calc(560 * var(--u));
-  height:calc(210 * var(--u));
-  transform:translate(-50%,-14%);
+  top:73.5%;
+  width:calc(650 * var(--u));
+  height:calc(235 * var(--u));
+  transform:translate(-50%,-12%);
   background:radial-gradient(50% 50% at 50% 50%,
-    rgba(236,245,255,.30) 0%,
-    rgba(162,194,234,.09) 46%,
-    transparent 73%);
-  filter:blur(calc(13 * var(--u)));
+    rgba(255,241,222,.34) 0%,
+    rgba(233,207,174,.14) 38%,
+    rgba(150,182,228,.07) 60%,
+    transparent 76%);
+  filter:blur(calc(14 * var(--u)));
   animation:fbBreathe 7.5s ease-in-out infinite;
 }
 
-/* Туман у земли */
+/* Туман: пять клубов плюс сплошная низовая дымка */
 .fb-fog{
   position:absolute;
   left:50%;
-  top:66%;
-  width:calc(1900 * var(--u));
-  height:calc(300 * var(--u));
+  top:61%;
+  width:calc(2100 * var(--u));
+  height:calc(420 * var(--u));
   transform:translateX(-50%);
-  filter:blur(calc(30 * var(--u)));
-  opacity:.5;
+  filter:blur(calc(33 * var(--u)));
+  opacity:.68;
   pointer-events:none;
+}
+.fb-fog::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height:48%;
+  background:linear-gradient(to top, rgba(198,218,248,.18), transparent);
 }
 .fb-fog i{
   position:absolute;
   display:block;
   border-radius:50%;
-  background:rgba(188,210,242,.14);
+  background:rgba(198,218,248,.17);
 }
-.fb-fog i:nth-child(1){ left:22%; top:18%; width:38%; height:62%; animation:fbDrift 34s ease-in-out infinite; }
-.fb-fog i:nth-child(2){ left:48%; top:6%;  width:30%; height:76%; animation:fbDrift 27s ease-in-out infinite reverse; }
-.fb-fog i:nth-child(3){ left:8%;  top:34%; width:26%; height:48%; animation:fbDrift 41s ease-in-out infinite; }
+.fb-fog i:nth-child(1){ left:20%; top:16%; width:40%; height:64%; animation:fbDrift 34s ease-in-out infinite; }
+.fb-fog i:nth-child(2){ left:47%; top:4%;  width:32%; height:80%; animation:fbDrift 27s ease-in-out infinite reverse; }
+.fb-fog i:nth-child(3){ left:7%;  top:30%; width:28%; height:54%; animation:fbDrift 41s ease-in-out infinite; }
+.fb-fog i:nth-child(4){ left:63%; top:24%; width:30%; height:58%; animation:fbDrift 31s ease-in-out infinite reverse; }
+.fb-fog i:nth-child(5){ left:34%; top:36%; width:24%; height:46%; animation:fbDrift 46s ease-in-out infinite; }
 
-/* Силуэт, уходящий в свет */
-.fb-figure{
-  position:absolute;
+/* Две фигуры: дальняя выше и мельче — так читается глубина сцены */
+.fb-figure{ position:absolute; fill:#010102; }
+.fb-near{
   left:56.5%;
   top:52%;
   width:calc(74 * var(--u));
@@ -223,8 +262,18 @@ ul{ list-style:none; }
   transform:translate(-50%,0);
   animation:fbWalk 9s ease-in-out infinite;
 }
+.fb-far{
+  left:48.2%;
+  top:55.3%;
+  width:calc(46 * var(--u));
+  height:calc(104 * var(--u));
+  transform:translate(-50%,0);
+  opacity:.52;
+  filter:blur(calc(1.7 * var(--u)));
+  animation:fbWalk 12.5s ease-in-out infinite reverse;
+}
 
-/* Киноплёночное зерно — оживляет плоскую заливку */
+/* Киноплёночное зерно. Вне камеры: зерно живёт на плёнке, а не в кадре. */
 .fb-grain{
   position:absolute;
   inset:0;
@@ -235,27 +284,33 @@ ul{ list-style:none; }
   background-size:calc(160 * var(--u)) calc(160 * var(--u));
 }
 
+@keyframes fbPush{
+  from{ transform:scale(1)     translate3d(0,0,0); }
+  to  { transform:scale(1.075) translate3d(calc(-8 * var(--u)), calc(-5 * var(--u)), 0); }
+}
 @keyframes fbBreathe{
   0%,100%{ opacity:.92; }
   50%    { opacity:1; }
 }
 @keyframes fbDrift{
   0%,100%{ transform:translateX(0) scale(1); }
-  50%    { transform:translateX(calc(60 * var(--u))) scale(1.08); }
+  50%    { transform:translateX(calc(70 * var(--u))) scale(1.1); }
 }
 @keyframes fbWalk{
-  0%,100%{ transform:translate(-50%,0)   scale(1); }
+  0%,100%{ transform:translate(-50%,0) scale(1); }
   50%    { transform:translate(-50%,calc(-3 * var(--u))) scale(.985); }
 }
 
 /* Видео заиграло — гасим анимации сцены, чтобы не тратить кадры впустую */
+.plate.is-video .fb-cam,
 .plate.is-video .fb-portal,
+.plate.is-video .fb-shaft,
 .plate.is-video .fb-floor,
 .plate.is-video .fb-fog i,
 .plate.is-video .fb-figure{ animation-play-state:paused; }
 
 @media (prefers-reduced-motion:reduce){
-  .fb-portal,.fb-floor,.fb-fog i,.fb-figure{ animation:none; }
+  .fb-cam,.fb-portal,.fb-shaft,.fb-floor,.fb-fog i,.fb-figure{ animation:none; }
 }
 
 /* ── Header ─────────────────────────────────────────────────── */
@@ -523,9 +578,12 @@ ul{ list-style:none; }
     object-position:43% center;
   }
 
-  .fb-portal{ left:70%; top:24%; height:54%; width:calc(30 * var(--u)); }
-  .fb-floor { left:70%; top:72%; width:calc(420 * var(--u)); }
-  .fb-figure{ left:61%; top:50%; width:calc(80 * var(--u)); height:calc(182 * var(--u)); }
+  .fb-cam   { transform-origin:70% 60%; }
+  .fb-portal{ left:70%; top:23.5%; height:55%; width:calc(31 * var(--u)); }
+  .fb-shaft { left:70%; top:23%;   width:calc(280 * var(--u)); height:58%; }
+  .fb-floor { left:70%; top:72%;   width:calc(460 * var(--u)); }
+  .fb-near  { left:60%;   top:49.5%; width:calc(80 * var(--u)); height:calc(182 * var(--u)); }
+  .fb-far   { left:47.5%; top:53.5%; width:calc(50 * var(--u)); height:calc(113 * var(--u)); }
 
   .plate::after{
     background:
@@ -798,19 +856,28 @@ ul{ list-style:none; }
     <!-- Запасная сцена. Рисуется браузером, ничего не грузит.
          Видео ложится поверх; если оно не придёт — видно её. -->
     <div class="plate-fallback" aria-hidden="true">
-      <div class="fb-fog"><i></i><i></i><i></i></div>
-      <div class="fb-floor"></div>
-      <div class="fb-portal"></div>
-      <svg class="fb-figure" viewBox="0 0 70 168" preserveAspectRatio="xMidYMax meet">
-        <g fill="#010102">
+
+      <!-- Силуэт объявлен один раз и подставляется дважды -->
+      <svg width="0" height="0" style="position:absolute">
+        <symbol id="fbWalker" viewBox="0 0 70 168">
           <ellipse cx="35" cy="12.6" rx="8.4" ry="9.3"/>
           <path d="M30.6 21.2h8.8c5 0 9.2 3.8 9.8 8.8l3.2 26.4c.5 4.1-2.7 7.8-6.9 7.8H24.5c-4.2 0-7.4-3.7-6.9-7.8l3.2-26.4c.6-5 4.8-8.8 9.8-8.8Z"/>
           <path d="M20.2 32.8c2 .6 3.1 2.6 2.5 4.6l-7.4 25.6c-.6 2-2.7 3.2-4.7 2.6s-3.1-2.6-2.5-4.6l7.4-25.6c.6-2 2.7-3.2 4.7-2.6Z"/>
           <path d="M49.8 32.8c2-.6 4.1.6 4.7 2.6l7.4 25.6c.6 2-.5 4-2.5 4.6s-4.1-.6-4.7-2.6l-7.4-25.6c-.6-2 .5-4 2.5-4.6Z"/>
           <path d="M23 64.2h10.5l-2.4 42.6-9.8 46.2c-.4 2-2.3 3.4-4.4 3.1l-2.6-.4c-2.4-.4-3.9-2.7-3.4-5l9.6-43.6L23 64.2Z"/>
           <path d="M36.5 64.2H47l1.7 42.9 9.6 43.6c.5 2.3-1 4.6-3.4 5l-2.6.4c-2.1.3-4-1.1-4.4-3.1l-9.8-46.2L36.5 64.2Z"/>
-        </g>
+        </symbol>
       </svg>
+
+      <div class="fb-cam">
+        <div class="fb-fog"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="fb-shaft"></div>
+        <div class="fb-floor"></div>
+        <div class="fb-portal"></div>
+        <svg class="fb-figure fb-far"  viewBox="0 0 70 168"><use href="#fbWalker"/></svg>
+        <svg class="fb-figure fb-near" viewBox="0 0 70 168"><use href="#fbWalker"/></svg>
+      </div>
+
       <div class="fb-grain"></div>
     </div>
 
