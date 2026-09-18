@@ -1012,14 +1012,20 @@ ul{ list-style:none; }
   var plate = document.getElementById('plate');
   var video = plate.querySelector('.plate-video');
 
-  function markVideoAlive() {
-    if (video.readyState >= 2 && video.videoWidth > 0) plate.classList.add('is-video');
+  /* ?fallback в адресе выбрасывает видео и показывает запасную сцену.
+     Нужно, чтобы проверить её одной ссылкой — без бубна с DevTools. */
+  if ((location.search + location.hash).indexOf('fallback') !== -1) {
+    video.remove();
+  } else {
+    var markVideoAlive = function () {
+      if (video.readyState >= 2 && video.videoWidth > 0) plate.classList.add('is-video');
+    };
+    video.addEventListener('loadeddata', markVideoAlive);
+    video.addEventListener('playing', markVideoAlive);
+    video.addEventListener('error', function () { plate.classList.remove('is-video'); }, true);
+    video.addEventListener('stalled', function () { plate.classList.remove('is-video'); });
+    markVideoAlive();
   }
-  video.addEventListener('loadeddata', markVideoAlive);
-  video.addEventListener('playing', markVideoAlive);
-  video.addEventListener('error', function () { plate.classList.remove('is-video'); }, true);
-  video.addEventListener('stalled', function () { plate.classList.remove('is-video'); });
-  markVideoAlive();
 
   var stage  = document.getElementById('stage');
   var burger = document.getElementById('burger');
