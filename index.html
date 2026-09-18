@@ -167,22 +167,28 @@ ul{ list-style:none; }
 .fb-ground{
   position:absolute;
   left:0; right:0;
-  top:62%;
+  top:56%;
   bottom:0;
-  background:linear-gradient(to bottom,
-    rgba(26,32,44,0) 0%,
-    rgba(30,37,50,.55) 16%,
-    rgba(18,22,31,.75) 52%,
-    rgba(8,10,14,.9) 100%);
+  /* Радиальный, а не линейный: пол светлее у источника и гаснет во все
+     стороны. Линейный градиент во всю ширину давал ровную серую полосу
+     с различимыми краями — она читалась прямоугольником, а не полом. */
+  background:radial-gradient(58% 92% at 63% 14%,
+    rgba(44,54,72,.5) 0%,
+    rgba(28,35,48,.3) 34%,
+    rgba(14,18,25,.14) 62%,
+    transparent 84%);
 }
 /* Мягкая линия схода — граница пола и темноты */
 .fb-horizon{
   position:absolute;
   left:0; right:0;
-  top:60.5%;
-  height:calc(120 * var(--u));
-  background:linear-gradient(to bottom, rgba(120,146,190,.09), transparent 70%);
-  filter:blur(calc(22 * var(--u)));
+  top:55%;
+  height:calc(130 * var(--u));
+  background:radial-gradient(36% 100% at 63% 50%,
+    rgba(132,158,204,.13) 0%,
+    rgba(110,136,180,.05) 46%,
+    transparent 76%);
+  filter:blur(calc(26 * var(--u)));
 }
 
 /* ── Свет ─────────────────────────────────────────────────────
@@ -239,15 +245,17 @@ ul{ list-style:none; }
   position:absolute;
   left:63%;
   top:61%;
-  width:calc(540 * var(--u));
-  height:calc(150 * var(--u));
-  transform:translate(-50%,-38%);
+  width:calc(400 * var(--u));
+  height:calc(120 * var(--u));
+  transform:translate(-50%,-44%);
+  /* Ярче и уже прежнего: именно это пятно объясняет глазу, что свет
+     падает на поверхность. Без него низ кадра остаётся просто серым. */
   background:radial-gradient(50% 50% at 50% 50%,
-    rgba(255,240,218,.36) 0%,
-    rgba(228,206,178,.13) 38%,
-    rgba(140,172,220,.05) 62%,
+    rgba(255,244,226,.62) 0%,
+    rgba(238,218,190,.24) 32%,
+    rgba(150,180,226,.07) 58%,
     transparent 78%);
-  filter:blur(calc(26 * var(--u)));
+  filter:blur(calc(20 * var(--u)));
   animation:fbBreathe 9s ease-in-out infinite;
 }
 
@@ -279,21 +287,23 @@ ul{ list-style:none; }
   background:rgba(176,198,236,.1);
   filter:blur(calc(58 * var(--u)));
 }
-.fb-haze i:nth-child(1){ left:24%; top:56%; width:64%; height:calc(210 * var(--u)); opacity:.85; animation:fbDrift 44s ease-in-out infinite; }
-.fb-haze i:nth-child(2){ left:46%; top:48%; width:44%; height:calc(260 * var(--u)); opacity:.55; animation:fbDrift 33s ease-in-out infinite reverse; }
-.fb-haze i:nth-child(3){ left:6%;  top:64%; width:52%; height:calc(180 * var(--u)); opacity:.5;  animation:fbDrift 57s ease-in-out infinite; }
-.fb-haze i:nth-child(4){ left:60%; top:68%; width:46%; height:calc(150 * var(--u)); opacity:.45; animation:fbDrift 39s ease-in-out infinite reverse; }
+/* Клубы держатся возле света. Широкие полосы во всю сцену снова дали бы
+   ровную серую ленту — именно она и читалась прямоугольником. */
+.fb-haze i:nth-child(1){ left:44%; top:52%; width:38%; height:calc(190 * var(--u)); opacity:.7;  animation:fbDrift 44s ease-in-out infinite; }
+.fb-haze i:nth-child(2){ left:54%; top:44%; width:26%; height:calc(230 * var(--u)); opacity:.5;  animation:fbDrift 33s ease-in-out infinite reverse; }
+.fb-haze i:nth-child(3){ left:33%; top:58%; width:30%; height:calc(160 * var(--u)); opacity:.4;  animation:fbDrift 57s ease-in-out infinite; }
+.fb-haze i:nth-child(4){ left:66%; top:56%; width:28%; height:calc(150 * var(--u)); opacity:.36; animation:fbDrift 39s ease-in-out infinite reverse; }
 
 /* Затемнение краёв — собирает взгляд в центр кадра */
 .fb-vignette{
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:radial-gradient(74% 68% at 60% 52%,
+  background:radial-gradient(58% 62% at 63% 48%,
     transparent 0%,
-    rgba(4,5,7,.26) 56%,
-    rgba(4,5,7,.72) 82%,
-    #040507 100%);
+    rgba(4,5,7,.34) 48%,
+    rgba(4,5,7,.82) 76%,
+    #040507 96%);
 }
 
 /* Киноплёночное зерно. Вне камеры: на плёнке оно не наезжает вместе с кадром. */
@@ -603,8 +613,26 @@ ul{ list-style:none; }
   .fb-glow-cool { left:70%; top:10%; width:calc(520 * var(--u)); height:66%; }
   .fb-pool      { left:70%; top:59%; width:calc(420 * var(--u)); }
   .fb-reflect   { left:70%; top:60%; width:calc(52 * var(--u)); height:calc(260 * var(--u)); }
-  .fb-ground    { top:60%; }
-  .fb-horizon   { top:58.5%; }
+  /* Столб в портрете смещён вправо — центр свечения пола едет за ним */
+  .fb-ground{
+    top:56%;
+    background:radial-gradient(74% 88% at 70% 14%,
+      rgba(44,54,72,.46) 0%,
+      rgba(28,35,48,.27) 34%,
+      rgba(14,18,25,.12) 62%,
+      transparent 84%);
+  }
+  .fb-horizon{
+    top:55%;
+    background:radial-gradient(44% 100% at 70% 50%,
+      rgba(132,158,204,.12) 0%,
+      rgba(110,136,180,.045) 46%,
+      transparent 76%);
+  }
+  .fb-haze i:nth-child(1){ left:50%; width:44%; }
+  .fb-haze i:nth-child(2){ left:60%; width:32%; }
+  .fb-haze i:nth-child(3){ left:38%; width:34%; }
+  .fb-haze i:nth-child(4){ left:70%; width:30%; }
   .fb-vignette  { background:radial-gradient(86% 60% at 68% 48%, transparent 0%, rgba(4,5,7,.3) 54%, rgba(4,5,7,.8) 84%, #040507 100%); }
 
   .plate::after{
