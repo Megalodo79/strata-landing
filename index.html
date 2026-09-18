@@ -169,14 +169,13 @@ ul{ list-style:none; }
   left:0; right:0;
   top:56%;
   bottom:0;
-  /* Радиальный, а не линейный: пол светлее у источника и гаснет во все
-     стороны. Линейный градиент во всю ширину давал ровную серую полосу
-     с различимыми краями — она читалась прямоугольником, а не полом. */
-  background:radial-gradient(58% 92% at 63% 14%,
-    rgba(44,54,72,.5) 0%,
-    rgba(28,35,48,.3) 34%,
-    rgba(14,18,25,.14) 62%,
-    transparent 84%);
+  /* Плотно прижат к столбу. Раньше свечение расползалось на пол-кадра
+     и висело серой массой прямо под заголовком — типографика должна
+     лежать на чистой пустоте, как в исходном кадре. */
+  background:radial-gradient(26% 62% at 63% 10%,
+    rgba(48,58,78,.42) 0%,
+    rgba(26,33,45,.18) 40%,
+    transparent 72%);
 }
 /* Мягкая линия схода — граница пола и темноты */
 .fb-horizon{
@@ -287,23 +286,34 @@ ul{ list-style:none; }
   background:rgba(176,198,236,.1);
   filter:blur(calc(58 * var(--u)));
 }
-/* Клубы держатся возле света. Широкие полосы во всю сцену снова дали бы
-   ровную серую ленту — именно она и читалась прямоугольником. */
-.fb-haze i:nth-child(1){ left:44%; top:52%; width:38%; height:calc(190 * var(--u)); opacity:.7;  animation:fbDrift 44s ease-in-out infinite; }
-.fb-haze i:nth-child(2){ left:54%; top:44%; width:26%; height:calc(230 * var(--u)); opacity:.5;  animation:fbDrift 33s ease-in-out infinite reverse; }
-.fb-haze i:nth-child(3){ left:33%; top:58%; width:30%; height:calc(160 * var(--u)); opacity:.4;  animation:fbDrift 57s ease-in-out infinite; }
-.fb-haze i:nth-child(4){ left:66%; top:56%; width:28%; height:calc(150 * var(--u)); opacity:.36; animation:fbDrift 39s ease-in-out infinite reverse; }
+/* Осталось два узких клуба вплотную к лучу. Всё, что шире, CSS-градиент
+   рисует бесформенным пятном — убедительного тумана из него не выходит,
+   поэтому лучше меньше и у самого источника. */
+.fb-haze i:nth-child(1){ left:56%; top:54%; width:16%; height:calc(120 * var(--u)); opacity:.5; animation:fbDrift 44s ease-in-out infinite; }
+.fb-haze i:nth-child(2){ left:62%; top:50%; width:12%; height:calc(150 * var(--u)); opacity:.4; animation:fbDrift 33s ease-in-out infinite reverse; }
+.fb-haze i:nth-child(3),
+.fb-haze i:nth-child(4){ display:none; }
 
 /* Затемнение краёв — собирает взгляд в центр кадра */
 .fb-vignette{
   position:absolute;
   inset:0;
   pointer-events:none;
-  background:radial-gradient(58% 62% at 63% 48%,
-    transparent 0%,
-    rgba(4,5,7,.34) 48%,
-    rgba(4,5,7,.82) 76%,
-    #040507 96%);
+  /* Левая половина гасится отдельно и жёстко: заголовок, подпись и кнопки
+     должны лежать на чистой пустоте. Ровно это делает боковой леттербокс
+     поверх настоящего видео — здесь тот же приём. */
+  background:
+    linear-gradient(to right,
+      #040507 0%,
+      rgba(4,5,7,.97) 26%,
+      rgba(4,5,7,.72) 40%,
+      rgba(4,5,7,.22) 50%,
+      transparent 58%),
+    radial-gradient(56% 60% at 64% 46%,
+      transparent 0%,
+      rgba(4,5,7,.36) 46%,
+      rgba(4,5,7,.84) 75%,
+      #040507 95%);
 }
 
 /* Киноплёночное зерно. Вне камеры: на плёнке оно не наезжает вместе с кадром. */
