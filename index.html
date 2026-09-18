@@ -136,221 +136,31 @@ ul{ list-style:none; }
 
 
 /* ══════════════════════════════════════════════════════════════
-   Запасная сцена
-   Лежит СЛОЕМ НИЖЕ видео. Пока видео играет, оно её перекрывает.
+   Запасной фон
+   Лежит СЛОЕМ НИЖЕ видео. Пока видео играет, оно его перекрывает.
    Если CDN отдаст 403 или файл исчезнет — кадров не будет, элемент
-   останется прозрачным, и сцена проступит сама.
+   останется прозрачным, и фон проступит сам.
 
-   Собрана ТОЛЬКО из размытых градиентов. Ни одной фигуры и ни одного
-   резкого края: у настоящего света границ нет, и любая чёткая кромка
-   мгновенно выдаёт рисунок.
+   Намеренно без всякой сцены. Попытки нарисовать свет, туман и пол
+   средствами CSS дают бесформенные серые пятна: градиент слишком
+   гладкий, чтобы изобразить атмосферу. Спокойная темнота честнее
+   и не спорит с типографикой.
    ══════════════════════════════════════════════════════════════ */
 .plate-fallback{
   position:absolute;
   inset:0;
   z-index:0;
-  overflow:hidden;
-  background:#040507;
+  background:
+    radial-gradient(118% 78% at 74% 16%,
+      rgba(32,40,56,.42) 0%,
+      rgba(17,21,30,.20) 44%,
+      transparent 74%),
+    linear-gradient(180deg,
+      #080a0d 0%,
+      #060608 46%,
+      #050505 100%);
 }
 .plate-video{ z-index:1; }
-
-.fb-cam{
-  position:absolute;
-  inset:0;
-  transform-origin:63% 58%;
-  animation:fbPush 64s ease-in-out infinite alternate;
-  will-change:transform;
-}
-
-/* ── Пол ──────────────────────────────────────────────────────
-   Горизонт и поверхность. Без них свет висит в пустоте. */
-.fb-ground{
-  position:absolute;
-  left:0; right:0;
-  top:56%;
-  bottom:0;
-  /* Плотно прижат к столбу. Раньше свечение расползалось на пол-кадра
-     и висело серой массой прямо под заголовком — типографика должна
-     лежать на чистой пустоте, как в исходном кадре. */
-  background:radial-gradient(26% 62% at 63% 10%,
-    rgba(48,58,78,.42) 0%,
-    rgba(26,33,45,.18) 40%,
-    transparent 72%);
-}
-/* Мягкая линия схода — граница пола и темноты */
-.fb-horizon{
-  position:absolute;
-  left:0; right:0;
-  top:55%;
-  height:calc(130 * var(--u));
-  background:radial-gradient(36% 100% at 63% 50%,
-    rgba(132,158,204,.13) 0%,
-    rgba(110,136,180,.05) 46%,
-    transparent 76%);
-  filter:blur(calc(26 * var(--u)));
-}
-
-/* ── Свет ─────────────────────────────────────────────────────
-   Три слоя: ядро, тёплый ореол, холодный дальний спад.
-   Каждый размыт — поэтому у столба нет кромки. */
-.fb-core{
-  position:absolute;
-  left:63%;
-  top:26%;
-  width:calc(13 * var(--u));
-  height:37%;
-  transform:translateX(-50%);
-  background:linear-gradient(to bottom,
-    rgba(255,255,255,0) 0%,
-    rgba(255,252,246,.55) 9%,
-    rgba(255,253,250,.96) 34%,
-    rgba(255,250,241,.98) 72%,
-    rgba(255,240,219,.5) 93%,
-    rgba(255,236,210,0) 100%);
-  filter:blur(calc(4.5 * var(--u)));
-  animation:fbBreathe 9s ease-in-out infinite;
-}
-.fb-glow-warm{
-  position:absolute;
-  left:63%;
-  top:22%;
-  width:calc(150 * var(--u));
-  height:47%;
-  transform:translateX(-50%);
-  background:radial-gradient(42% 50% at 50% 50%,
-    rgba(255,226,186,.42) 0%,
-    rgba(255,206,150,.16) 46%,
-    transparent 78%);
-  filter:blur(calc(34 * var(--u)));
-  animation:fbBreathe 9s ease-in-out infinite;
-}
-.fb-glow-cool{
-  position:absolute;
-  left:63%;
-  top:12%;
-  width:calc(620 * var(--u));
-  height:68%;
-  transform:translateX(-50%);
-  background:radial-gradient(44% 50% at 50% 52%,
-    rgba(150,184,238,.22) 0%,
-    rgba(96,140,212,.09) 44%,
-    transparent 76%);
-  filter:blur(calc(72 * var(--u)));
-  animation:fbBreathe 13s ease-in-out infinite;
-}
-
-/* Разлив по полу у основания столба */
-.fb-pool{
-  position:absolute;
-  left:63%;
-  top:61%;
-  width:calc(400 * var(--u));
-  height:calc(120 * var(--u));
-  transform:translate(-50%,-44%);
-  /* Ярче и уже прежнего: именно это пятно объясняет глазу, что свет
-     падает на поверхность. Без него низ кадра остаётся просто серым. */
-  background:radial-gradient(50% 50% at 50% 50%,
-    rgba(255,244,226,.62) 0%,
-    rgba(238,218,190,.24) 32%,
-    rgba(150,180,226,.07) 58%,
-    transparent 78%);
-  filter:blur(calc(20 * var(--u)));
-  animation:fbBreathe 9s ease-in-out infinite;
-}
-
-/* Отражение на влажном полу — тянется к зрителю.
-   Самый дешёвый способ показать, что поверхность существует. */
-.fb-reflect{
-  position:absolute;
-  left:63%;
-  top:62%;
-  width:calc(46 * var(--u));
-  height:calc(300 * var(--u));
-  transform:translateX(-50%);
-  background:linear-gradient(to bottom,
-    rgba(255,243,224,.30) 0%,
-    rgba(255,238,214,.12) 34%,
-    rgba(210,222,246,.04) 68%,
-    transparent 100%);
-  filter:blur(calc(17 * var(--u)));
-}
-
-/* ── Дымка ────────────────────────────────────────────────────
-   Широкие полосы разной высоты, каждая дрейфует со своим периодом —
-   рисунок не повторяется, глаз не ловит зацикленность. */
-.fb-haze{ position:absolute; inset:0; pointer-events:none; }
-.fb-haze i{
-  position:absolute;
-  display:block;
-  border-radius:50%;
-  background:rgba(176,198,236,.1);
-  filter:blur(calc(58 * var(--u)));
-}
-/* Осталось два узких клуба вплотную к лучу. Всё, что шире, CSS-градиент
-   рисует бесформенным пятном — убедительного тумана из него не выходит,
-   поэтому лучше меньше и у самого источника. */
-.fb-haze i:nth-child(1){ left:56%; top:54%; width:16%; height:calc(120 * var(--u)); opacity:.5; animation:fbDrift 44s ease-in-out infinite; }
-.fb-haze i:nth-child(2){ left:62%; top:50%; width:12%; height:calc(150 * var(--u)); opacity:.4; animation:fbDrift 33s ease-in-out infinite reverse; }
-.fb-haze i:nth-child(3),
-.fb-haze i:nth-child(4){ display:none; }
-
-/* Затемнение краёв — собирает взгляд в центр кадра */
-.fb-vignette{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  /* Левая половина гасится отдельно и жёстко: заголовок, подпись и кнопки
-     должны лежать на чистой пустоте. Ровно это делает боковой леттербокс
-     поверх настоящего видео — здесь тот же приём. */
-  background:
-    linear-gradient(to right,
-      #040507 0%,
-      rgba(4,5,7,.97) 26%,
-      rgba(4,5,7,.72) 40%,
-      rgba(4,5,7,.22) 50%,
-      transparent 58%),
-    radial-gradient(56% 60% at 64% 46%,
-      transparent 0%,
-      rgba(4,5,7,.36) 46%,
-      rgba(4,5,7,.84) 75%,
-      #040507 95%);
-}
-
-/* Киноплёночное зерно. Вне камеры: на плёнке оно не наезжает вместе с кадром. */
-.fb-grain{
-  position:absolute;
-  inset:0;
-  opacity:.045;
-  mix-blend-mode:overlay;
-  pointer-events:none;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
-  background-size:calc(160 * var(--u)) calc(160 * var(--u));
-}
-
-@keyframes fbPush{
-  from{ transform:scale(1)    translate3d(0,0,0); }
-  to  { transform:scale(1.06) translate3d(calc(-7 * var(--u)), calc(-4 * var(--u)), 0); }
-}
-@keyframes fbBreathe{
-  0%,100%{ opacity:.9; }
-  50%    { opacity:1; }
-}
-@keyframes fbDrift{
-  0%,100%{ transform:translateX(0) scale(1); }
-  50%    { transform:translateX(calc(80 * var(--u))) scale(1.12); }
-}
-
-/* Видео заиграло — гасим анимации сцены, кадры на невидимый слой не тратим */
-.plate.is-video .fb-cam,
-.plate.is-video .fb-core,
-.plate.is-video .fb-glow-warm,
-.plate.is-video .fb-glow-cool,
-.plate.is-video .fb-pool,
-.plate.is-video .fb-haze i{ animation-play-state:paused; }
-
-@media (prefers-reduced-motion:reduce){
-  .fb-cam,.fb-core,.fb-glow-warm,.fb-glow-cool,.fb-pool,.fb-haze i{ animation:none; }
-}
 
 /* ── Header ─────────────────────────────────────────────────── */
 .topbar{ position:absolute; inset:0; pointer-events:none; z-index:3; }
@@ -616,34 +426,6 @@ ul{ list-style:none; }
     object-fit:cover;
     object-position:43% center;
   }
-
-  .fb-cam       { transform-origin:70% 56%; }
-  .fb-core      { left:70%; top:24%; height:36%; width:calc(15 * var(--u)); }
-  .fb-glow-warm { left:70%; top:20%; width:calc(180 * var(--u)); height:46%; }
-  .fb-glow-cool { left:70%; top:10%; width:calc(520 * var(--u)); height:66%; }
-  .fb-pool      { left:70%; top:59%; width:calc(420 * var(--u)); }
-  .fb-reflect   { left:70%; top:60%; width:calc(52 * var(--u)); height:calc(260 * var(--u)); }
-  /* Столб в портрете смещён вправо — центр свечения пола едет за ним */
-  .fb-ground{
-    top:56%;
-    background:radial-gradient(74% 88% at 70% 14%,
-      rgba(44,54,72,.46) 0%,
-      rgba(28,35,48,.27) 34%,
-      rgba(14,18,25,.12) 62%,
-      transparent 84%);
-  }
-  .fb-horizon{
-    top:55%;
-    background:radial-gradient(44% 100% at 70% 50%,
-      rgba(132,158,204,.12) 0%,
-      rgba(110,136,180,.045) 46%,
-      transparent 76%);
-  }
-  .fb-haze i:nth-child(1){ left:50%; width:44%; }
-  .fb-haze i:nth-child(2){ left:60%; width:32%; }
-  .fb-haze i:nth-child(3){ left:38%; width:34%; }
-  .fb-haze i:nth-child(4){ left:70%; width:30%; }
-  .fb-vignette  { background:radial-gradient(86% 60% at 68% 48%, transparent 0%, rgba(4,5,7,.3) 54%, rgba(4,5,7,.8) 84%, #040507 100%); }
 
   .plate::after{
     background:
@@ -913,22 +695,8 @@ ul{ list-style:none; }
   <!-- ── Background plane ─────────────────────────────────── -->
   <div class="plate" id="plate">
 
-    <!-- Запасная сцена. Рисуется браузером, ничего не грузит.
-         Видео ложится поверх; если оно не придёт — видно её. -->
-    <div class="plate-fallback" aria-hidden="true">
-      <div class="fb-cam">
-        <div class="fb-ground"></div>
-        <div class="fb-horizon"></div>
-        <div class="fb-glow-cool"></div>
-        <div class="fb-glow-warm"></div>
-        <div class="fb-reflect"></div>
-        <div class="fb-pool"></div>
-        <div class="fb-core"></div>
-        <div class="fb-haze"><i></i><i></i><i></i><i></i></div>
-      </div>
-      <div class="fb-vignette"></div>
-      <div class="fb-grain"></div>
-    </div>
+    <!-- Запасной фон. Видео ложится поверх; если оно не придёт — виден он. -->
+    <div class="plate-fallback" aria-hidden="true"></div>
 
     <video class="plate-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
       <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260808_112712_da9d53df-6d27-4b12-bdf6-aa9dc2622bdf.mp4" type="video/mp4">
@@ -1055,25 +823,12 @@ ul{ list-style:none; }
 (function () {
   'use strict';
 
-  /* Фон играет? Если CDN отвалится, кадров не будет и сквозь
-     прозрачное видео проступит нарисованная сцена. Класс нужен лишь
-     затем, чтобы погасить её анимации, когда они всё равно не видны. */
+  /* ?fallback в адресе выбрасывает видео и показывает запасной фон.
+     Нужно, чтобы проверить его одной ссылкой — без бубна с DevTools. */
   var plate = document.getElementById('plate');
-  var video = plate.querySelector('.plate-video');
-
-  /* ?fallback в адресе выбрасывает видео и показывает запасную сцену.
-     Нужно, чтобы проверить её одной ссылкой — без бубна с DevTools. */
   if ((location.search + location.hash).indexOf('fallback') !== -1) {
-    video.remove();
-  } else {
-    var markVideoAlive = function () {
-      if (video.readyState >= 2 && video.videoWidth > 0) plate.classList.add('is-video');
-    };
-    video.addEventListener('loadeddata', markVideoAlive);
-    video.addEventListener('playing', markVideoAlive);
-    video.addEventListener('error', function () { plate.classList.remove('is-video'); }, true);
-    video.addEventListener('stalled', function () { plate.classList.remove('is-video'); });
-    markVideoAlive();
+    var v = plate.querySelector('.plate-video');
+    if (v) v.remove();
   }
 
   var stage  = document.getElementById('stage');
